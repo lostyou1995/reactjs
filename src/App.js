@@ -1,29 +1,55 @@
 import React, { Component } from 'react';
 import './App.css';
-import TodoListItem from './components/TodoListItem';
+import TodoListItem from './components/todo-list/TodoListItem';
 
 class App extends Component {
   constructor() {
     super();
-    this.todoListItem = [
-        {title: 'Go to schools', isCompleted: true},
+    this.state = {
+      todoItems: [
+        {title: 'Go to schools', isCompleted: false},
         {title: 'Go to company', isCompleted: false},
-        {title: 'Go to super market', isCompleted: false}
-    ];
+        {title: 'Go to super market', isCompleted: false},
+        {title: 'Go to play football', isCompleted: false},
+      ]
+    };
+
+    this.onItemClicked = this.onItemClicked.bind(this);
+    
+  }
+
+  onItemClicked(item) {
+    return (event) => {
+      const isCompleted = item.isCompleted;
+      const { todoItems } = this.state;
+      const index= todoItems.indexOf(item);
+      this.setState ({
+        todoItems: [
+          ...todoItems.slice(0, index),
+          {
+            ...item,
+            isCompleted: !isCompleted
+          },
+          ...todoItems.slice(index + 1)
+        ]
+      });
+    }
   }
 
   render() {
-      return (
-        <div className="App">
+        const {todoItems} = this.state;
+        return (
+          <div className="App">
             {
-              this.todoListItem.length > 0 &&  this.todoListItem.map((item, index) => 
-              <TodoListItem key={index}  item={ item }/>)
+              todoItems.map((item, index) =>
+                <TodoListItem 
+                key = {index} 
+                item = {item}
+                onClick = {this.onItemClicked(item)}/>
+             )
             }
-            {
-              this.todoListItem.length === 0 && 'Nothing here'
-            }
-        </div>
-      );
+          </div>
+        );
   }
 }
 
